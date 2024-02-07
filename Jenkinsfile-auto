@@ -1,7 +1,11 @@
 pipeline {
     agent any
     environment{
+<<<<<<< HEAD
         FULL_IMAGE = "309814440714.dkr.ecr.ap-southeast-1.amazonaws.com/nodejs-random-color:latest"
+=======
+        FULL_IMAGE = "430950558682.dkr.ecr.ap-southeast-1.amazonaws.com/nodejs-random-color:latest"
+>>>>>>> 2b5989d (modify Jenkinsfile-auto to fix bug ECR image version)
         TASK_DEFINITION =""
         NEW_TASK_DEFINITION=""
         NEW_TASK_INFO=""
