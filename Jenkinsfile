@@ -15,7 +15,7 @@ pipeline {
         stage('Upload image to ECR') {
             steps {
                 sh 'aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 309814440714.dkr.ecr.ap-southeast-1.amazonaws.com'
-                sh 'docker tag nodejs-random-color:latest 309814440714.dkr.ecr.ap-southeast-1.amazonaws.com/nodejs-random-color:ver-${BUILD_ID}'
+                sh 'docker tag nodejs-random-color:ver-${BUILD_ID} 309814440714.dkr.ecr.ap-southeast-1.amazonaws.com/nodejs-random-color:ver-${BUILD_ID}'
                 sh 'docker push 309814440714.dkr.ecr.ap-southeast-1.amazonaws.com/nodejs-random-color:ver-${BUILD_ID}'
             }
         }
