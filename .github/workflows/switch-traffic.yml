@@ -6,7 +6,7 @@ on:
 
 env:
   AWS_REGION: ap-southeast-1
-  ALB_ARN: arn:aws:elasticloadbalancing:ap-southeast-1:430950558682:loadbalancer/app/udemy-devops-alb/b05b5a89ff031cac
+  ALB_ARN: arn:aws:elasticloadbalancing:ap-southeast-1:799227077423:loadbalancer/app/udemy-devops-alb/b05b5a89ff031cac
 
 jobs:
   switch-traffic:
@@ -19,6 +19,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
+        mask-aws-account-id: false
         
     - name: Switch traffic between blue and green environments
       run: |
