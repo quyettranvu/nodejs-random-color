@@ -1,0 +1,58 @@
+name: Switch ALB Traffic
+
+on:
+  workflow_dispatch: {}
+  workflow_call: {}
+
+env:
+  AWS_REGION: ap-southeast-1
+  ALB_ARN: arn:aws:elasticloadbalancing:ap-southeast-1:430950558682:loadbalancer/app/udemy-devops-alb/b05b5a89ff031cac
+
+jobs:
+  switch-traffic:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+        
+    - name: Switch traffic between blue and green environments
+      run: |
+        # Get listener information for both blue and green environments
+        output_blue=$(aws elbv2 describe-listeners \
+          --load-balancer-arn ${{ env.ALB_ARN }} \
+          | jq -r '.Listeners[0] | {ListenerArn, TargetGroupArn: .DefaultActions[0].TargetGroupArn}')
+        
+        output_green=$(aws elbv2 describe-listeners \
+          --load-balancer-arn ${{ env.ALB_ARN }} \
+          | jq -r '.Listeners[1] | {ListenerArn, TargetGroupArn: .DefaultActions[0].TargetGroupArn}')
+        
+        # Extract ARNs
+        LISTENER_BLUE_ARN=$(echo $output_blue | jq -r '.ListenerArn')
+        LISTENER_GREEN_ARN=$(echo $output_green | jq -r '.ListenerArn')
+        TG_BLUE_ARN=$(echo $output_blue | jq -r '.TargetGroupArn')
+        TG_GREEN_ARN=$(echo $output_green | jq -r '.TargetGroupArn')
+        
+        echo "Blue Listener: $LISTENER_BLUE_ARN"
+        echo "Green Listener: $LISTENER_GREEN_ARN"
+        echo "Blue Target Group: $TG_BLUE_ARN"
+        echo "Green Target Group: $TG_GREEN_ARN"
+        
+        # Switch traffic by swapping target groups between listeners
+        echo "Switching traffic..."
+        
+        aws elbv2 modify-listener \
+          --listener-arn $LISTENER_BLUE_ARN \
+          --default-actions Type=forward,TargetGroupArn=$TG_GREEN_ARN
+        
+        aws elbv2 modify-listener \
+          --listener-arn $LISTENER_GREEN_ARN \
+          --default-actions Type=forward,TargetGroupArn=$TG_BLUE_ARN
+        
+        echo "Traffic switch completed successfully!"
+        echo "Blue listener now points to: $TG_GREEN_ARN"
+        echo "Green listener now points to: $TG_BLUE_ARN"
