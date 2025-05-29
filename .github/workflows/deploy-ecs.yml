@@ -24,8 +24,8 @@ on:
 
 env:
   AWS_REGION: ap-southeast-1
-  ECR_REGISTRY: 430950558682.dkr.ecr.ap-southeast-1.amazonaws.com
-  ECR_REPOSITORY: nodejs-random-color
+  ECR_REGISTRY: 799227077423.dkr.ecr.ap-southeast-1.amazonaws.com
+  ECR_REPOSITORY: nodejs-random-color-0529
   TASK_FAMILY: nodejs-task-definition
   SERVICE_NAME: nodejs-service
 
