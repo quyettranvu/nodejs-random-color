@@ -7,10 +7,6 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Add a GET method for /index route
-<<<<<<< HEAD
-=======
-
->>>>>>> 0363609 (fix bug index.js)
 app.get('/', (req, res) => {
     res.redirect('/index.html');
 });
